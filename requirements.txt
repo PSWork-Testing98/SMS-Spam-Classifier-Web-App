@@ -4,4 +4,5 @@ joblib
 nltk
 
 gunicorn # for deployment on Render
-Flask-Cors==4.0.0
+
+

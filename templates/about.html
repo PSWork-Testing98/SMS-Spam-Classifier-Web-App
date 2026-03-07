@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="about-container">
+
+    <!-- ========================= -->
+    <!-- Meet the Team Section     -->
+    <!-- ========================= -->
+
+    <h1 class="about-title">Meet VPsPs Team</h1>
+    <p class="about-subtitle">// The people behind the classifier</p>
+
+    <div class="section-label"><span>Team Members</span></div>
+
+    <div class="team-section">
+
+        <!-- ✅ Added: team-card-wrapper for rotating border -->
+        <div class="team-card-wrapper">
+            <div class="team-card">
+                <img src="{{ url_for('static', filename='Member2.png') }}" alt="Team Member">
+                <h3>Vivek Pralhad Salunkhe</h3>
+                <p class="role">Neural Craftsman</p>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank">GitHub</a>
+                    <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card-wrapper">
+            <div class="team-card">
+                <img src="{{ url_for('static', filename='Member1.png') }}" alt="Team Member">
+                <h3>Priyanshu Sahoo</h3>
+                <p class="role">Data Alchemist</p>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank">GitHub</a>
+                    <a href="https://in.linkedin.com/in/priyanshusahoo-ps98" target="_blank">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- How It Works Section      -->
+    <!-- ========================= -->
+
+    <h1 class="about-title">How It Works</h1>
+    <p class="about-subtitle">// Inside the detection engine</p>
+
+    <div class="section-label"><span>System Overview</span></div>
+
+    <div class="how-section">
+
+        <div class="about-block">
+            <h3>The Problem</h3>
+            <p>
+                SMS spam has become a major cybersecurity concern. Spam messages are often used
+                for phishing attacks, fraud, and spreading malicious links. Detecting spam
+                automatically helps users stay safe and avoid scams. Our system uses Natural
+                Language Processing and Machine Learning to classify messages as spam or legitimate.
+            </p>
+        </div>
+
+        <div class="about-block">
+            <h3>System Architecture</h3>
+
+            <!-- ✅ Updated: flow-arrow class added to arrow spans -->
+            <div class="flowchart">
+                <div class="flow-step">User Message</div>
+                <span class="flow-arrow">➜</span>
+
+                <div class="flow-step">Text Preprocessing</div>
+                <span class="flow-arrow">➜</span>
+
+                <div class="flow-step">TF-IDF Vectorization</div>
+                <span class="flow-arrow">➜</span>
+
+                <div class="flow-step">ML Model</div>
+                <span class="flow-arrow">➜</span>
+
+                <div class="flow-step">Spam / Ham Result</div>
+            </div>
+
+        </div>
+
+        <div class="about-block">
+            <h3>Technology Stack</h3>
+
+            <!-- ✅ Updated: strong tags removed, plain text works better with CSS dot styling -->
+            <ul class="tech-list">
+                <li>Python — Core Language</li>
+                <li>Flask — Web Framework</li>
+                <li>Scikit-Learn — Machine Learning</li>
+                <li>TF-IDF — Vectorization</li>
+                <li>Multinomial Naive Bayes — Model</li>
+                <li>HTML &amp; CSS — Frontend</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

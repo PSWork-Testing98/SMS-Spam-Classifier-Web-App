@@ -9,9 +9,12 @@ import nltk
 import string
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+from flask_cors import CORS
 import os  # used to read PORT for Render deployment
+import logging
 
 app = Flask(__name__)
+CORS(app)  # <-- allow cross-origin requests (for Hoppscotch / Android / Browser clients)
 
 # Load trained model and vectorizer
 model = load("model/model.joblib")
@@ -124,3 +127,4 @@ def api_predict():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+

@@ -1,6 +1,6 @@
-# app.py
 # ========================================================
-# SMS Spam Classifier Web App (Flask) — API + UI
+# ==      © 2026 VPsPs Team. All Rights Reserved.       ==
+# ==      SMS Spam Classifier Web App using Flask       ==
 # ========================================================
 
 from flask import Flask, render_template, request, jsonify
@@ -9,31 +9,24 @@ import nltk
 import string
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
-from flask_cors import CORS
-import os
-import logging
-
-logging.basicConfig(level=logging.INFO)
+import os  # used to read PORT for Render deployment
 
 app = Flask(__name__)
-CORS(app)  # <-- allow cross-origin requests (for Hoppscotch / Android / Browser clients)
 
-# Load trained model and vectorizer (ensure these files exist in model/)
+# Load trained model and vectorizer
 model = load("model/model.joblib")
 vectorizer = load("model/vectorizer.joblib")
 
-# Ensure required NLTK resources are present (first startup will download them)
+# Download required nltk resources (only first time)
 nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 ps = PorterStemmer()
-stop_words = set(stopwords.words('english'))
+stop_words = set(stopwords.words('english'))  # optimized (not inside loop)
 
-
-def transform_text(text: str) -> str:
-    """Same preprocessing used during training."""
-    if not isinstance(text, str):
-        text = str(text)
+# ===== SAME FUNCTION USED DURING TRAINING =====
+def transform_text(text):
     text = text.lower()
     text = nltk.word_tokenize(text)
 
@@ -56,67 +49,78 @@ def transform_text(text: str) -> str:
         y.append(ps.stem(i))
 
     return " ".join(y)
+# =============================================
 
-
-# ---------- Web UI routes (unchanged) ----------
 @app.route("/", methods=["GET", "POST"])
 def index():
-    # This route renders the UI and uses form POST (for the website).
     prediction = None
     confidence = None
-    message = ""
+    message = ""   # store the user message
 
     if request.method == "POST":
-        message = request.form.get("message", "")
+        message = request.form.get("message", "")   # get message from form
+
+        # Apply same preprocessing
         clean = transform_text(message)
+
+        # Vectorization
         vect = vectorizer.transform([clean])
+
+        # Prediction
         pred = model.predict(vect)[0]
+
+        # Confidence score
         prob = model.predict_proba(vect)[0]
         confidence = round(max(prob) * 100, 2)
+
         prediction = "Spam" if pred == 1 else "Ham"
 
-    return render_template("index.html", prediction=prediction, confidence=confidence, message=message)
+    return render_template(
+        "index.html",
+        prediction=prediction,
+        confidence=confidence,
+        message=message   # send message back to template
+    )
 
 
 @app.route("/about")
 def about():
     return render_template("about.html")
 
+# ========================================================
+# API Endpoint (for Android App)
+# ========================================================
 
-# ---------- API route for JSON clients (Hoppscotch / Android) ----------
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
-    try:
-        # Accept JSON body { "message": "..." }
-        data = request.get_json(force=True, silent=True)
-        if not data:
-            return jsonify({"error": "Invalid or empty JSON body. Expected { 'message': '...' }"}), 400
 
-        message = data.get("message", "")
-        if not message:
-            return jsonify({"error": "Missing 'message' field in JSON body."}), 400
+    data = request.get_json()
 
-        # Preprocess, vectorize, predict
-        clean = transform_text(message)
-        vect = vectorizer.transform([clean])
+    if not data or "message" not in data:
+        return jsonify({"error": "Message not provided"}), 400
 
-        pred = model.predict(vect)[0]
-        prob = model.predict_proba(vect)[0]
-        confidence = round(max(prob) * 100, 2)
-        label = "Spam" if pred == 1 else "Ham"
+    message = data["message"]
 
-        return jsonify({
-            "prediction": label,
-            "confidence": confidence,
-            "message": message
-        }), 200
+    # Apply same preprocessing
+    clean = transform_text(message)
 
-    except Exception as e:
-        logging.exception("Error in /api/predict")
-        return jsonify({"error": "Server error", "details": str(e)}), 500
+    # Vectorization
+    vect = vectorizer.transform([clean])
 
+    # Prediction
+    pred = model.predict(vect)[0]
+
+    # Confidence score
+    prob = model.predict_proba(vect)[0]
+    confidence = round(max(prob) * 100, 2)
+
+    prediction = "Spam" if pred == 1 else "Ham"
+
+    return jsonify({
+        "prediction": prediction,
+        "confidence": confidence
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    # bind to 0.0.0.0 for Render
     app.run(host="0.0.0.0", port=port)

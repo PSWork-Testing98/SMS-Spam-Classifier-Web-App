@@ -3,7 +3,7 @@
 # ==      SMS Spam Classifier Web App using Flask       ==
 # ========================================================
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from joblib import load
 import nltk
 import string
@@ -87,6 +87,39 @@ def index():
 def about():
     return render_template("about.html")
 
+# ========================================================
+# API Endpoint (for Android App)
+# ========================================================
+
+@app.route("/api/predict", methods=["POST"])
+def api_predict():
+
+    data = request.get_json()
+
+    if not data or "message" not in data:
+        return jsonify({"error": "Message not provided"}), 400
+
+    message = data["message"]
+
+    # Apply same preprocessing
+    clean = transform_text(message)
+
+    # Vectorization
+    vect = vectorizer.transform([clean])
+
+    # Prediction
+    pred = model.predict(vect)[0]
+
+    # Confidence score
+    prob = model.predict_proba(vect)[0]
+    confidence = round(max(prob) * 100, 2)
+
+    prediction = "Spam" if pred == 1 else "Ham"
+
+    return jsonify({
+        "prediction": prediction,
+        "confidence": confidence
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

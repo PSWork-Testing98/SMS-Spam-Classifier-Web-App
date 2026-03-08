@@ -1,0 +1,7 @@
+Flask
+scikit-learn==1.6.1
+joblib
+nltk
+
+gunicorn # for deployment on Render
+Flask-Cors==4.0.0 # for handling CORS issues

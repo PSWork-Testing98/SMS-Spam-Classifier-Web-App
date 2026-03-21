@@ -98,6 +98,7 @@ body::after {
     height: 45px;
     filter: drop-shadow(0 0 8px rgba(0, 220, 255, 0.5));
     transition: filter 0.3s ease;
+    pointer-events: none;
 }
 
 .logo img:hover {
@@ -544,6 +545,8 @@ footer {
         0 0 20px rgba(0, 240, 255, 0.2),
         0 8px 24px rgba(0,0,0,0.5);
     transition: box-shadow 0.3s ease;
+    -webkit-user-drag: none;
+    pointer-events: none;
 }
 
 .team-card-wrapper:hover .team-card img {

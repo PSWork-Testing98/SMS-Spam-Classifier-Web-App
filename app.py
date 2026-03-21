@@ -5,6 +5,7 @@
 
 from flask import Flask, render_template, request, jsonify
 from joblib import load
+import numpy as np
 import nltk
 import string
 from nltk.corpus import stopwords
@@ -17,19 +18,26 @@ import logging
 API_KEY = os.environ.get("API_KEY", "VPsPs-2026-secret")
 
 app = Flask(__name__)
-CORS(app)  # <-- allow cross-origin requests (for Hoppscotch / Android / Browser clients)
+CORS(
+    app
+)  # <-- allow cross-origin requests (for Hoppscotch / Android / Browser clients)
 
 # Load trained model and vectorizer
 model = load("model/model.joblib")
 vectorizer = load("model/vectorizer.joblib")
 
 # Download required nltk resources (only first time), added 'quiet=True' for the cleaner logs.
-nltk.download('punkt', quiet=True)
-nltk.download('punkt_tab', quiet=True)
-nltk.download('stopwords', quiet=True)
+nltk.download("punkt", quiet=True)
+nltk.download("punkt_tab", quiet=True)
+nltk.download("stopwords", quiet=True)
+
+from nltk.stem import WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+nltk.download("wordnet")
 
 ps = PorterStemmer()
-stop_words = set(stopwords.words('english'))  # optimized (not inside loop)
+stop_words = set(stopwords.words("english"))  # optimized (not inside loop)
+
 
 # ===== SAME FUNCTION USED DURING TRAINING =====
 def transform_text(text):
@@ -45,32 +53,48 @@ def transform_text(text):
     y.clear()
 
     for i in text:
-        if i not in stop_words and i not in string.punctuation:
+        if (
+            i.isalpha()
+            and i.lower() not in stopwords.words("english")
+            and i not in string.punctuation
+        ):
             y.append(i)
 
     text = y[:]
     y.clear()
 
     for i in text:
-        y.append(ps.stem(i))
+        y.append(lemmatizer.lemmatize(i))
 
     return " ".join(y)
+
 # =============================================
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
     confidence = None
-    message = ""   # store the user message
+    message = ""  # store the user message
 
     if request.method == "POST":
-        message = request.form.get("message", "")   # get message from form
+        message = request.form.get("message", "")  # get message from form
 
         # Apply same preprocessing
         clean = transform_text(message)
 
         # Vectorization
-        vect = vectorizer.transform([clean])
+        vect = vectorizer.transform([clean]).toarray()
+
+        # Extra features (same as training)
+        num_characters = len(message)
+        num_words = len(message.split())
+        num_sentences = message.count('.') + message.count('!') + message.count('?')
+
+        extra = np.array([[num_characters, num_words, num_sentences]])
+
+        # Combine
+        vect = np.hstack((vect, extra))
 
         # Prediction
         pred = model.predict(vect)[0]
@@ -85,7 +109,7 @@ def index():
         "index.html",
         prediction=prediction,
         confidence=confidence,
-        message=message   # send message back to template
+        message=message,  # send message back to template
     )
 
 
@@ -93,9 +117,11 @@ def index():
 def about():
     return render_template("about.html")
 
+
 # ========================================================
 # API Endpoint (for Android App)
 # ========================================================
+
 
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
@@ -128,10 +154,8 @@ def api_predict():
 
     prediction = "Spam" if pred == 1 else "Ham"
 
-    return jsonify({
-        "prediction": prediction,
-        "confidence": confidence
-    })
+    return jsonify({"prediction": prediction, "confidence": confidence})
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

@@ -5,3 +5,10 @@ nltk
 
 gunicorn # for deployment on Render
 Flask-Cors==4.0.0 # for handling CORS issues
+numpy
+bcrypt
+PyJWT
+psycopg2-binary # PostgreSQL database adapter for Python
+
+# Uncomment when implementing email (forgot password feature)
+# Flask-Mail

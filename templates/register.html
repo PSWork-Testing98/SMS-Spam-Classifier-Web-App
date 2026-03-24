@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="login-section">
+
+    <div class="login-eyebrow">// Create Your Account</div>
+    <h1 class="login-title">SIGN UP</h1>
+    <p class="login-subtitle">Join the VPsPs platform to start classifying messages.</p>
+
+    <div class="glass-card login-card">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="login-alert login-alert--{{ category }}">
+                        {% if category == 'error' %}⚠{% else %}✔{% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Register Form -->
+        <form method="POST" action="/register" autocomplete="off" novalidate>
+
+            <!-- Username -->
+            <div class="input-group">
+                <label for="fullname" class="input-label">
+                    <span class="input-label-icon">⬡</span> Username
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" class="login-input"
+                        placeholder="Enter your username"
+                        value="{{ request.form.get('username', '') }}"
+                        autocomplete="username" required>
+                    <span class="input-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <label for="email" class="input-label">
+                    <span class="input-label-icon">⬡</span> Email Address
+                </label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" name="email" class="login-input"
+                        placeholder="you@example.com"
+                        value="{{ request.form.get('email', '') }}"
+                        autocomplete="email" required>
+                    <span class="input-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <label for="reg_password" class="input-label">
+                    <span class="input-label-icon">⬡</span> Password
+                </label>
+                <div class="input-wrapper">
+                    <input type="password" id="reg_password" name="password" class="login-input"
+                        placeholder="Min. 8 characters"
+                        autocomplete="new-password" required>
+                    <button type="button" class="toggle-password" id="toggleBtn1" aria-label="Toggle password">
+                        <svg id="eyeIcon1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="strength-bar-wrap">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+                <span class="strength-label" id="strengthLabel"></span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="input-group">
+                <label for="confirm_password" class="input-label">
+                    <span class="input-label-icon">⬡</span> Confirm Password
+                </label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" class="login-input"
+                        placeholder="Re-enter your password"
+                        autocomplete="new-password" required>
+                    <button type="button" class="toggle-password" id="toggleBtn2" aria-label="Toggle confirm password">
+                        <svg id="eyeIcon2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+                <span class="match-label" id="matchLabel"></span>
+            </div>
+
+            <button type="submit" class="login-btn">Create Account</button>
+
+        </form>
+
+        <p class="register-prompt">
+            Already have an account?
+            <a href="/login" class="register-link">Sign in</a>
+        </p>
+
+    </div>
+
+</section>
+
+<script>
+    /* ── Show / hide toggles ── */
+    function makeToggle(btnId, inputId, iconId) {
+        const btn   = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        const icon  = document.getElementById(iconId);
+        const open   = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        const closed = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+        btn.addEventListener('click', () => {
+            const show     = input.type === 'password';
+            input.type     = show ? 'text' : 'password';
+            icon.innerHTML = show ? closed : open;
+            btn.style.color = show ? 'rgba(0,240,255,0.7)' : 'rgba(255,255,255,0.3)';
+        });
+    }
+    makeToggle('toggleBtn1', 'reg_password',      'eyeIcon1');
+    makeToggle('toggleBtn2', 'confirm_password',  'eyeIcon2');
+
+    /* ── Strength meter ── */
+    const pwInput       = document.getElementById('reg_password');
+    const strengthBar   = document.getElementById('strengthBar');
+    const strengthLabel = document.getElementById('strengthLabel');
+
+    const levels = [
+        { label: '',        color: 'transparent', width: '0%'   },
+        { label: 'Weak',    color: '#ff3e5e',      width: '25%'  },
+        { label: 'Fair',    color: '#f0a500',      width: '50%'  },
+        { label: 'Good',    color: '#00b4cc',      width: '75%'  },
+        { label: 'Strong',  color: '#00e890',      width: '100%' },
+    ];
+
+    function getStrength(pw) {
+        if (!pw.length) return 0;
+        let s = 0;
+        if (pw.length >= 8)           s++;
+        if (/[A-Z]/.test(pw))         s++;
+        if (/[0-9]/.test(pw))         s++;
+        if (/[^A-Za-z0-9]/.test(pw))  s++;
+        return s;
+    }
+
+    pwInput.addEventListener('input', () => {
+        const s = getStrength(pwInput.value);
+        strengthBar.style.width      = levels[s].width;
+        strengthBar.style.background = levels[s].color;
+        strengthBar.style.boxShadow  = s > 0 ? `0 0 8px ${levels[s].color}` : 'none';
+        strengthLabel.textContent    = levels[s].label;
+        strengthLabel.style.color    = levels[s].color;
+        checkMatch();
+    });
+
+    /* ── Match check ── */
+    const cfInput    = document.getElementById('confirm_password');
+    const matchLabel = document.getElementById('matchLabel');
+
+    function checkMatch() {
+        if (!cfInput.value) { matchLabel.textContent = ''; return; }
+        const ok = pwInput.value === cfInput.value;
+        matchLabel.textContent = ok ? '✔ Passwords match' : '✘ Passwords do not match';
+        matchLabel.style.color = ok ? '#00e890' : '#ff6080';
+    }
+    cfInput.addEventListener('input', checkMatch);
+</script>
+
+{% endblock %}

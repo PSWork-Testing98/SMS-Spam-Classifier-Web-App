@@ -16,9 +16,9 @@
         {% if prediction %}
         <div class="result {{ prediction|lower }}">
             {% if prediction == "Spam" %}
-                ❌ Spam Message - {{ confidence }}% Confidence
+                ❌ Spam Message
             {% else %}
-                ✅ Safe Message (Ham) - {{ confidence }}% Confidence
+                ✅ Safe Message (Ham)
             {% endif %}
         </div>
         {% endif %}

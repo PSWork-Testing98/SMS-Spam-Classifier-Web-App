@@ -70,6 +70,7 @@ import string
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from flask_cors import CORS
 
 # ── Active: PostgreSQL ──────────────────────────────────
 import psycopg2
@@ -80,8 +81,9 @@ import psycopg2.extras   # provides RealDictCursor (column access by name)
 
 import bcrypt
 import jwt
-import os
+import os # used to read PORT for Render deployment
 import datetime
+import re
 
 # [EMAIL] STEP 1 — Uncomment this import when ready to enable email
 # from flask_mail import Mail, Message
@@ -91,7 +93,7 @@ import datetime
 # APP CONFIG
 # =========================
 app = Flask(__name__)
-CORS(app)
+CORS(app) # <-- allow cross-origin requests (for Hoppscotch / Android / Browser clients)
 
 # Secret key for session encryption
 # Generate a strong one: python -c "import secrets; print(secrets.token_hex(32))"
@@ -420,8 +422,8 @@ nltk.download("punkt_tab",  quiet=True)
 nltk.download("stopwords",  quiet=True)
 nltk.download("wordnet",    quiet=True)
 
-stop_words = set(stopwords.words("english"))
-lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words("english")) # optimized (not inside loop)
+lemmatizer = WordNetLemmatizer() # initialized once
 
 
 # =========================
@@ -431,31 +433,60 @@ lemmatizer = WordNetLemmatizer()
 def transform_text(text: str) -> str:
     """
     Preprocesses raw message — must match training pipeline exactly.
-    Unaffected by database migration.
+    Updated to match new model training pipeline.
     """
+    # Lowercase
     text = text.lower()
-    text = nltk.word_tokenize(text)
-    y    = [i for i in text if i.isalnum()]
-    y    = [i for i in y if i.isalpha()
-            and i not in stop_words
-            and i not in string.punctuation]
-    y    = [lemmatizer.lemmatize(i) for i in y]
-    return " ".join(y)
+
+    # Remove non-alphabet characters
+    text = re.sub(r'[^a-zA-Z]', ' ', text)
+
+    # Remove URLs and emails
+    text = re.sub(r'http\S+|www\S+', '', text)
+    text = re.sub(r'\S+@\S+', '', text)
+
+    # Remove numbers
+    text = re.sub(r'\d+', '', text)
+
+    # Handle repeated characters (e.g. "heyyyy" → "heyy")
+    text = re.sub(r'(.)\1+', r'\1\1', text)
+
+    # Tokenise
+    words = nltk.word_tokenize(text)
+
+    # Remove stopwords, non-alpha, and single characters
+    words = [
+        word for word in words
+        if word.isalpha()
+        and word not in stop_words
+        and len(word) > 1
+    ]
+
+    # Lemmatise
+    words = [lemmatizer.lemmatize(word) for word in words]
+
+    return " ".join(words)
 
 
 def build_features(message: str):
     """
-    Builds 7003-feature vector (7000 TF-IDF + 3 extra).
-    Unaffected by database migration.
+    Builds final feature vector (TF-IDF + 3 extra features).
+    Must match training pipeline exactly — 7003 features total.
     """
-    clean          = transform_text(message)
-    vect           = vectorizer.transform([clean]).toarray()
+    clean = transform_text(message)
+
+    # TF-IDF vector (7000 features)
+    vect = vectorizer.transform([clean]).toarray()
+
+    # Extra features — calculated on raw message, not cleaned
     num_characters = len(message)
     num_words      = len(nltk.word_tokenize(message))
     num_sentences  = len(nltk.sent_tokenize(message))
-    extra          = np.array([[num_characters, num_words, num_sentences]])
-    return np.hstack((vect, extra))
 
+    extra_features = np.array([[num_characters, num_words, num_sentences]])
+
+    # Combine → 7003 features total
+    return np.hstack((vect, extra_features))
 
 # =========================
 # AUTH DECORATOR
@@ -484,21 +515,17 @@ def login_required(f):
 @login_required
 def index():
     prediction = None
-    confidence = None
     message    = ""
 
     if request.method == "POST":
         message    = request.form.get("message", "")
         features   = build_features(message)
         pred       = model.predict(features)[0]
-        prob       = model.predict_proba(features)[0]
-        confidence = round(max(prob) * 100, 2)
         prediction = "Spam" if pred == 1 else "Ham"
 
     return render_template(
         "index.html",
         prediction=prediction,
-        confidence=confidence,
         message=message
     )
 
@@ -724,11 +751,9 @@ def api_predict():
     message    = data["message"]
     features   = build_features(message)
     pred       = model.predict(features)[0]
-    prob       = model.predict_proba(features)[0]
-    confidence = round(max(prob) * 100, 2)
     prediction = "Spam" if pred == 1 else "Ham"
 
-    return jsonify({"prediction": prediction, "confidence": confidence})
+    return jsonify({"prediction": prediction})
 
 
 # ========================================================

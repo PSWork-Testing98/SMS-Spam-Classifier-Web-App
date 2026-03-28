@@ -1,3 +1,5 @@
+<!-- Whole About Page Template has been updated -->
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -72,13 +74,19 @@
                 <div class="flow-step">User Message</div>
                 <span class="flow-arrow">➜</span>
 
-                <div class="flow-step">Text Preprocessing</div>
+                <div class="flow-step">Data Preprocessing Layer</div>
                 <span class="flow-arrow">➜</span>
 
-                <div class="flow-step">TF-IDF Vectorization</div>
+                <div class="flow-step">Feature Extraction (TF-IDF)</div>
                 <span class="flow-arrow">➜</span>
 
-                <div class="flow-step">ML Model</div>
+                <div class="flow-step">Data Balancing (SMOTE - Training Only)</div>
+                <span class="flow-arrow">➜</span>
+
+                <div class="flow-step">ML Models</div>
+                <span class="flow-arrow">➜</span>
+
+                <div class="flow-step">Evaluation Layer</div>
                 <span class="flow-arrow">➜</span>
 
                 <div class="flow-step">Spam / Ham Result</div>
@@ -91,17 +99,136 @@
 
             <!-- ✅ Updated: strong tags removed, plain text works better with CSS dot styling -->
             <ul class="tech-list">
-                <li>Python — Core Language</li>
-                <li>Flask — Web Framework</li>
-                <li>Scikit-Learn — Machine Learning</li>
-                <li>TF-IDF — Vectorization</li>
-                <li>Multinomial Naive Bayes — Model</li>
-                <li>HTML &amp; CSS — Frontend</li>
+                <li>Python — Core Programming Language</li>
+                <li>Pandas & NumPy — Data Processing & Analysis</li>
+                <li>NLTK — Text Preprocessing (Tokenization, Stopwords, Lemmatization)</li>
+                <li>Scikit-learn — Machine Learning Models & Evaluation</li>
+                <li>TF-IDF Vectorizer — Text Feature Extraction (Unigrams & Bigrams)</li>
+                <li>SMOTE (Imbalanced-learn) — Handling Class Imbalance</li>
+                <li>Multiple ML Models — SVM, Random Forest, KNN, Naive Bayes, Logistic Regression</li>
+                <li>Matplotlib & Seaborn — Data Visualization</li>
+                <li>Flask — Backend Web Framework (Model Deployment API)</li>
+                <li>Django — Backend Web Framework & Template Rendering</li>
+                <li>HTML, CSS — Frontend UI Design (Integrated with Django Templates)</li>
+                <li>Joblib — Saving & Loading Trained Model</li>
             </ul>
 
         </div>
 
     </div>
+
+
+    <!-- ========================= -->
+    <!-- Model Performance Section -->
+    <!-- ========================= -->
+
+    <h1 class="about-title">Model Performance</h1>
+    <p class="about-subtitle">// SVM classifier evaluation metrics</p>
+
+    <div class="section-label"><span>Benchmark Results</span></div>
+
+    <div class="metrics-section">
+
+        <!-- Metric Cards -->
+        <div class="metrics-cards">
+            <div class="metric-card metric-card--cyan">
+                <p class="metric-label">Accuracy</p>
+                <p class="metric-value">98.34%</p>
+            </div>
+            <div class="metric-card metric-card--purple">
+                <p class="metric-label">Precision</p>
+                <p class="metric-value">96.01%</p>
+            </div>
+            <div class="metric-card metric-card--green">
+                <p class="metric-label">Recall</p>
+                <p class="metric-value">95.32%</p>
+            </div>
+            <div class="metric-card metric-card--amber">
+                <p class="metric-label">ROC AUC</p>
+                <p class="metric-value">97.19%</p>
+            </div>
+            <div class="metric-card metric-card--pink">
+                <p class="metric-label">F1 Score</p>
+                <p class="metric-value">95.67%</p>
+            </div>
+        </div>
+
+        <!-- Bar Chart -->
+        <div class="chart-wrapper">
+            <canvas id="metricsChart"></canvas>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="metrics-meta">
+            <span>Model: <strong>SVM</strong></span>
+            <span>Support: <strong>1446</strong></span>
+            <span>Training Time: <strong>632.2s</strong></span>
+            <span>Prediction Time: <strong>11.1s</strong></span>
+            <span>Score: <strong>96.20</strong></span>
+        </div>
+
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+        new Chart(document.getElementById('metricsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Accuracy', 'Precision', 'Recall', 'ROC AUC', 'F1 Score'],
+                datasets: [{
+                    label: 'SVM Model',
+                    data: [98.34, 96.01, 95.32, 97.19, 95.67],
+                    backgroundColor: [
+                        'rgba(0,240,255,0.2)',
+                        'rgba(168,85,247,0.2)',
+                        'rgba(0,232,144,0.2)',
+                        'rgba(240,165,0,0.2)',
+                        'rgba(255,60,120,0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(0,240,255,0.9)',
+                        'rgba(168,85,247,0.9)',
+                        'rgba(0,232,144,0.9)',
+                        'rgba(240,165,0,0.9)',
+                        'rgba(255,60,120,0.9)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.parsed.y.toFixed(2)}%`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 93,
+                        max: 100,
+                        ticks: {
+                            color: '#7a8fa8',
+                            callback: v => v + '%'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        border: { color: 'rgba(255,255,255,0.08)' }
+                    },
+                    x: {
+                        ticks: { color: '#7a8fa8' },
+                        grid: { display: false },
+                        border: { color: 'rgba(255,255,255,0.08)' }
+                    }
+                }
+            }
+        });
+    </script>
 
 </section>
 

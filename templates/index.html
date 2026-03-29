@@ -13,6 +13,12 @@
             <button type="submit">Analyze Message</button>
         </form>
 
+        {% if error %}
+        <div class="result-error">
+            ⚠ {{ error }}
+        </div>
+        {% endif %}
+
         {% if prediction %}
         <div class="result {{ prediction|lower }}">
             {% if prediction == "Spam" %}
@@ -22,6 +28,7 @@
             {% endif %}
         </div>
         {% endif %}
+
     </div>
 
 </section>

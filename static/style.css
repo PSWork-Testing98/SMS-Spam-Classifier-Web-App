@@ -344,6 +344,26 @@ button:active {
 }
 
 /* ========================= */
+/* Empty Message Error       */
+/* ========================= */
+
+.result-error {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeUp 0.4s ease both;
+    background: rgba(240, 165, 0, 0.1);
+    color: #f0a500;
+    border: 1px solid rgba(240, 165, 0, 0.35);
+    box-shadow: 0 0 20px rgba(240, 165, 0, 0.06) inset;
+}
+
+/* ========================= */
 /* Footer */
 /* ========================= */
 

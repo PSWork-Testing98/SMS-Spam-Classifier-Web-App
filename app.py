@@ -407,7 +407,7 @@ def verify_reset_token(token: str):
 # LOAD ML MODEL
 # =========================
 
-# Load trained Naive Bayes model and TF-IDF vectorizer
+# Load trained SVM model and TF-IDF vectorizer
 # Completely unaffected by the database migration
 model      = load("model/model.joblib")
 vectorizer = load("model/vectorizer.joblib")
@@ -516,19 +516,24 @@ def login_required(f):
 def index():
     prediction = None
     message    = ""
+    error      = None          # ← new
 
     if request.method == "POST":
-        message    = request.form.get("message", "")
-        features   = build_features(message)
-        pred       = model.predict(features)[0]
-        prediction = "Spam" if pred == 1 else "Ham"
+        message = request.form.get("message", "").strip()
+
+        if not message:                           # ← empty check
+            error = "Please enter a message."
+        else:
+            features   = build_features(message)
+            pred       = model.predict(features)[0]
+            prediction = "Spam" if pred == 1 else "Ham"
 
     return render_template(
         "index.html",
         prediction=prediction,
-        message=message
+        message=message,
+        error=error            # ← pass to template
     )
-
 
 # ─── About ───────────────────────────────────────────────
 @app.route("/about")

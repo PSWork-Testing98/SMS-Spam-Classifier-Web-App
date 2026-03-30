@@ -81,6 +81,7 @@ import psycopg2.extras   # provides RealDictCursor (column access by name)
 
 import bcrypt
 import jwt
+import gdown
 import os # used to read PORT for Render deployment
 import datetime
 import re
@@ -407,8 +408,19 @@ def verify_reset_token(token: str):
 # LOAD ML MODEL
 # =========================
 
-# Load trained SVM model and TF-IDF vectorizer
-# Completely unaffected by the database migration
+def download_models():
+    os.makedirs("model", exist_ok=True)
+    if not os.path.exists("model/model.joblib"):
+        print("Downloading model.joblib...")
+        gdown.download("https://drive.google.com/uc?id=1oOxltj5kX83cdOQeIO4MkE9YpKVbuTqe",
+                       "model/model.joblib", quiet=False)
+    if not os.path.exists("model/vectorizer.joblib"):
+        print("Downloading vectorizer.joblib...")
+        gdown.download("https://drive.google.com/uc?id=1cyM3Y9MsndI3xnKEDj1amPZei92mFykN",
+                       "model/vectorizer.joblib", quiet=False)
+
+download_models()
+
 model      = load("model/model.joblib")
 vectorizer = load("model/vectorizer.joblib")
 

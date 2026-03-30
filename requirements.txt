@@ -9,6 +9,7 @@ numpy
 bcrypt
 PyJWT
 psycopg2-binary # PostgreSQL database adapter for Python
+gdown
 
 # Uncomment when implementing email (forgot password feature)
 # Flask-Mail

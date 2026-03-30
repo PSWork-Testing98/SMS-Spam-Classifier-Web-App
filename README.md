@@ -207,6 +207,10 @@ sms_spam_web/
 ├── templates/
 │   ├── base.html
 │   ├── index.html
+│   ├── forgot_password.html
+│   ├── login.html
+│   ├── register.html
+│   ├── reset_password.html
 │   └── about.html
 ├── static/
 │   ├── style.css
@@ -217,8 +221,10 @@ sms_spam_web/
 │       └── logo2.png
 ├── .gitignore
 ├── render.yaml
-├── SMS_Spam_Classifier.ipynb
+├── OverSampler_sms_detection.ipynb
+├── SMOTE_sms_detection.ipynb
 ├── spam.csv
+├── spam_ham_india4.csv
 ├── LICENSE
 └── README.md
 ```

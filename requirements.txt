@@ -3,13 +3,10 @@ scikit-learn==1.6.1
 joblib
 nltk
 
-gunicorn # for deployment on Render
-Flask-Cors==4.0.0 # for handling CORS issues
+gunicorn
+Flask-Cors==4.0.0
 numpy
 bcrypt
 PyJWT
-psycopg2-binary # PostgreSQL database adapter for Python
+psycopg2-binary
 gdown
-
-# Uncomment when implementing email (forgot password feature)
-# Flask-Mail

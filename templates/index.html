@@ -1,24 +1,18 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 <section class="hero">
-
     <h1 class="main-title">SMS SPAM CLASSIFIER</h1>
     <p class="subtitle">Analyze text messages for potential spam in real-time.</p>
-
     <div class="glass-card">
         <form method="POST">
             <textarea name="message" placeholder="Enter your message...">{{ message }}</textarea>
             <button type="submit">Analyze Message</button>
         </form>
-
         {% if error %}
         <div class="result-error">
             ⚠ {{ error }}
         </div>
         {% endif %}
-
         {% if prediction %}
         <div class="result {{ prediction|lower }}">
             {% if prediction == "Spam" %}
@@ -28,9 +22,6 @@
             {% endif %}
         </div>
         {% endif %}
-
     </div>
-
 </section>
-
 {% endblock %}

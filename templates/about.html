@@ -1,21 +1,10 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 <section class="about-container">
-
-    <!-- ========================= -->
-    <!-- Meet the Team Section     -->
-    <!-- ========================= -->
-
     <h1 class="about-title">Meet VPsPs Team</h1>
     <p class="about-subtitle">// The people behind the classifier</p>
-
     <div class="section-label"><span>Team Members</span></div>
-
     <div class="team-section">
-
-        <!-- ✅ Added: team-card-wrapper for rotating border -->
         <div class="team-card-wrapper">
             <div class="team-card">
                 <img src="{{ url_for('static', filename='images/Member2.png') }}" alt="Team Member" draggable="false">
@@ -27,7 +16,6 @@
                 </div>
             </div>
         </div>
-
         <div class="team-card-wrapper">
             <div class="team-card">
                 <img src="{{ url_for('static', filename='images/Member1.png') }}" alt="Team Member" draggable="false">
@@ -39,21 +27,11 @@
                 </div>
             </div>
         </div>
-
     </div>
-
-
-    <!-- ========================= -->
-    <!-- How It Works Section      -->
-    <!-- ========================= -->
-
     <h1 class="about-title">How It Works</h1>
     <p class="about-subtitle">// Inside the detection engine</p>
-
     <div class="section-label"><span>System Overview</span></div>
-
     <div class="how-section">
-
         <div class="about-block">
             <h3>The Problem</h3>
             <p>
@@ -63,39 +41,26 @@
                 Language Processing and Machine Learning to classify messages as spam or legitimate.
             </p>
         </div>
-
         <div class="about-block">
             <h3>System Architecture</h3>
-
-            <!-- ✅ Updated: flow-arrow class added to arrow spans -->
             <div class="flowchart">
                 <div class="flow-step">User Message</div>
                 <span class="flow-arrow">➜</span>
-
                 <div class="flow-step">Data Preprocessing Layer</div>
                 <span class="flow-arrow">➜</span>
-
                 <div class="flow-step">Feature Extraction (TF-IDF)</div>
                 <span class="flow-arrow">➜</span>
-
                 <div class="flow-step">Data Balancing (SMOTE - Training Only)</div>
                 <span class="flow-arrow">➜</span>
-
                 <div class="flow-step">ML Models</div>
                 <span class="flow-arrow">➜</span>
-
                 <div class="flow-step">Evaluation Layer</div>
                 <span class="flow-arrow">➜</span>
-
                 <div class="flow-step">Spam / Ham Result</div>
             </div>
-
         </div>
-
         <div class="about-block">
             <h3>Technology Stack</h3>
-
-            <!-- ✅ Updated: strong tags removed, plain text works better with CSS dot styling -->
             <ul class="tech-list">
                 <li>Python — Core Programming Language</li>
                 <li>Pandas & NumPy — Data Processing & Analysis</li>
@@ -110,24 +75,12 @@
                 <li>HTML, CSS — Frontend UI Design (Integrated with Django Templates)</li>
                 <li>Joblib — Saving & Loading Trained Model</li>
             </ul>
-
         </div>
-
     </div>
-
-
-    <!-- ========================= -->
-    <!-- Model Performance Section -->
-    <!-- ========================= -->
-
     <h1 class="about-title">Model Performance</h1>
     <p class="about-subtitle">// SVM classifier evaluation metrics</p>
-
     <div class="section-label"><span>Benchmark Results</span></div>
-
     <div class="metrics-section">
-
-        <!-- Metric Cards -->
         <div class="metrics-cards">
             <div class="metric-card metric-card--cyan">
                 <p class="metric-label">Accuracy</p>
@@ -150,13 +103,9 @@
                 <p class="metric-value">95.67%</p>
             </div>
         </div>
-
-        <!-- Bar Chart -->
         <div class="chart-wrapper">
             <canvas id="metricsChart"></canvas>
         </div>
-
-        <!-- Meta Info -->
         <div class="metrics-meta">
             <span>Model: <strong>SVM</strong></span>
             <span>Support: <strong>1446</strong></span>
@@ -164,10 +113,7 @@
             <span>Prediction Time: <strong>11.1s</strong></span>
             <span>Score: <strong>96.20</strong></span>
         </div>
-
     </div>
-
-    <!-- Chart.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script>
         new Chart(document.getElementById('metricsChart'), {
@@ -227,7 +173,5 @@
             }
         });
     </script>
-
 </section>
-
 {% endblock %}

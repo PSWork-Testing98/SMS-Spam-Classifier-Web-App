@@ -41,7 +41,15 @@ def get_cursor(conn):
 def init_db():
     conn   = get_db()
     cursor = get_cursor(conn)
-    cursor.execute()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id            SERIAL       PRIMARY KEY,
+            username      VARCHAR(50)  NOT NULL UNIQUE,
+            email         VARCHAR(255) NOT NULL UNIQUE,
+            password_hash TEXT         NOT NULL,
+            created_at    TIMESTAMP    NOT NULL DEFAULT NOW()
+        )
+    """)
     conn.commit()
     cursor.close()
     conn.close()

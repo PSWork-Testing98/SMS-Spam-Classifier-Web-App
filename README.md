@@ -123,11 +123,11 @@ The system is deployed on a cloud platform and provides a **scalable, secure, an
 ## 📂 Project Structure
 
 ```
-sms_spam_web/
+SMS-Spam-Classifier-Web-App/
 │
 ├── app.py
 ├── requirements.txt
-├── model/
+├── model/            # Not Needed as uploaded through Google Drive
 │   ├── model.joblib
 │   └── vectorizer.joblib
 ├── templates/

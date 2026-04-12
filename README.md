@@ -1,200 +1,126 @@
-# SMS Spam Classifier Web Application
+<div align="center">
 
-This project is a **Machine Learning powered SMS Spam Detection Web Application** built using **Python, Flask, and Scikit-Learn**.
-The system analyzes a user's message and predicts whether it is **Spam** or **Ham (Not Spam)** using Natural Language Processing (NLP) techniques.
+<img src="static/images/logo.png" alt="SpamShield Logo" width="180"/>
+<h1 style=font-weight: bold;>VPsPs Projects</h1>
 
-The application includes a **clean and responsive web interface**, allowing users to input a message and instantly receive a prediction along with a **confidence score** indicating how certain the model is about its prediction.
+# 🛡️ SMS Spam Filter using Machine Learning and Android Application
 
----
+### An **AI-powered SMS spam detection system** that classifies messages as **Spam or Ham (Not Spam)** using Machine Learning
 
-# Project Overview
+### The system integrates a **Flask-based backend API**, a **web application**, and an **Android application** for real-time SMS classification
 
-SMS spam messages are commonly used for **phishing, scams, fraud, and malicious advertising**.
-Detecting such messages automatically helps users avoid harmful links and suspicious offers.
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![NLTK](https://img.shields.io/badge/NLTK-NLP-154F3C?style=for-the-badge)](https://www.nltk.org/)
+[![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://vpsps-projects-spam-sms-classifier-web.onrender.com/)
 
-This project implements a **Machine Learning based spam classifier** that processes user input, converts the text into numerical features, and predicts whether the message is spam or legitimate.
+**[🌐 Live Demo →](https://vpsps-projects-spam-sms-classifier-web.onrender.com/)**
 
----
-
-# Machine Learning Pipeline
-
-The system follows a typical **Natural Language Processing pipeline**:
-
-User Message
-↓
-Text Preprocessing
-↓
-Tokenization
-↓
-Stopword Removal
-↓
-Stemming
-↓
-TF-IDF Vectorization
-↓
-Machine Learning Model
-↓
-Spam / Ham Prediction
+</div>
 
 ---
 
-# Text Preprocessing
+## 📌 Table of Contents
 
-Before feeding the text to the model, the input message goes through several preprocessing steps:
-
-1. **Lowercasing** – Convert all characters to lowercase
-2. **Tokenization** – Split text into individual words
-3. **Stopword Removal** – Remove common words like "the", "is", "and"
-4. **Punctuation Removal** – Remove special characters
-5. **Stemming** – Reduce words to their root form using **PorterStemmer**
-
-Example:
-
-Original Message:
-Win a FREE lottery now!!!
-
-After preprocessing:
-win free lotteri
+- [Overview](#-overview)
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+- [Tech Stack](#️-tech-stack)
+- [Project Structure](#-project-structure)
+- [Sample Test Messages](#-sample-test-messages)
+- [How It Works](#️-how-it-works)
+- [Authors](#-authors)
+- [Android Version](#-android-version)
+- [License](#-license)
 
 ---
 
-# Feature Extraction
+## 🧩 Overview
 
-To convert text into numbers that the machine learning model can understand, the project uses:
+SMS spam messages have become a major threat due to their involvement in **phishing attacks, fraud, malicious links, and unwanted advertisements**. Manual detection of such messages is inefficient and unreliable, creating a need for an automated and intelligent solution.
 
-**TF-IDF Vectorization**
+**SMS Spam Filter using Machine Learning and Android Application** is an end-to-end system that classifies SMS messages as **Spam or Ham (Not Spam)** using advanced Machine Learning techniques. The system integrates a **Flask-based backend API**, a **web application**, and an **Android application** to enable both manual and real-time SMS classification.
 
-TF-IDF stands for:
+The Machine Learning model is built using a robust NLP pipeline that includes **text preprocessing, TF-IDF feature extraction (unigrams and bigrams), and additional numerical features** such as message length and word count. To handle class imbalance, **SMOTE (Synthetic Minority OverSampling Technique)** is applied, and the final model is implemented using a **Support Vector Machine (SVM)**, achieving high accuracy on real-world datasets.
 
-Term Frequency – Inverse Document Frequency
-
-It measures how important a word is within a message relative to the entire dataset.
-
-This helps the model identify **keywords commonly associated with spam messages**.
+The system is deployed on a cloud platform and provides a **scalable, secure, and practical solution** for real-time spam detection across multiple platforms.
 
 ---
 
-# Machine Learning Model
+## 🌐 Live Demo
 
-The classifier used in this project is:
+> Experience the Spam SMS Classifier in action — explore how messages are detected and categorized instantly.
 
-**Multinomial Naive Bayes**
+🔗 **[https://vpsps-projects-spam-sms-classifier-web.onrender.com/](https://vpsps-projects-spam-sms-classifier-web.onrender.com/)**
 
-Why Naive Bayes?
+### 🔑 Login Credentials
 
-* Works very well for **text classification**
-* Efficient for large text datasets
-* Fast training and prediction
-* High accuracy for spam detection problems
+- **Username**: `VPsPs`  
+- **Password**: `Hello@1234`
 
 ---
 
-# Confidence Score
+## ✨ Features
 
-Along with the prediction (Spam or Ham), the system also shows a **confidence score**.
+### ⚡ What makes this system powerful?
 
-The confidence score represents how certain the model is about its prediction.
+🧠 **Advanced Machine Learning Pipeline**
 
-Example:
-
-Prediction: Spam
-Confidence: 96.4%
-
-This value is calculated using the model's probability output:
-
-```python
-prob = model.predict_proba(vect)[0]
-confidence = max(prob) * 100
-```
-
-Higher confidence indicates the model is **more certain about its prediction**.
+- NLP-based text preprocessing (tokenization, stopword removal, normalization)
+- **TF-IDF Vectorization** (Unigrams + Bigrams)
+- Additional engineered features (message length, word count, sentence count)
+- **SMOTE** for handling class imbalance
+- Final model: **Support Vector Machine (SVM)** with high accuracy
 
 ---
 
-# Features
+### 🌐 Multi-Platform Architecture
 
-* Real-time **Spam / Ham prediction**
-* **Confidence score** for prediction reliability
-* Advanced **text preprocessing pipeline**
-* Uses **TF-IDF feature extraction**
-* Machine learning powered classification
-* Modern **responsive web interface**
-* Built with **Flask web framework**
+🔗 **Flask REST API (Core Engine)**
 
----
+- Centralized prediction system
+- Secure and scalable cloud deployment
 
-# Tech Stack
+💻 **Web Application**
 
-### Programming Language
+- User-friendly interface for manual SMS classification
+- Authentication system (Login / Register / Reset Password)
 
-Python
+📱 **Android Application**
 
-### Machine Learning
-
-Scikit-Learn
-
-### NLP Tools
-
-NLTK
-
-### Feature Extraction
-
-TF-IDF Vectorizer
-
-### Model
-
-Multinomial Naive Bayes
-
-### Backend
-
-Flask
-
-### Frontend
-
-HTML
-CSS
-
-### Model Storage
-
-Joblib
+- Manual + real-time SMS analysis
+- **BroadcastReceiver** for automatic detection of incoming messages
+- Seamless API communication using **Retrofit**
 
 ---
 
-# How the Web Application Works
+### 🎯 Final Outcome
 
-1. User enters a message in the text area
-2. The message is sent to the Flask backend
-3. The backend preprocesses the text
-4. TF-IDF converts the message into numerical features
-5. The trained model predicts **Spam or Ham**
-6. The confidence score is calculated
-7. The result is displayed on the webpage
+✨ A **robust, scalable, and real-world ready SMS spam detection system** that combines:
+
+> 🤖 Machine Learning + 🌐 Web Development + 📱 Mobile Computing + ☁️ Cloud Deployment
 
 ---
 
-# How to Run the Project
+## 🛠️ Tech Stack
 
-### 1 Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 2 Run the Flask application
-
-```bash
-python app.py
-```
-
-### 3 Open the application in your browser
-
-```
-http://127.0.0.1:5000
-```
+| Layer              | Technology        |
+| ------------------ | ----------------- |
+| Language           | Python, Kotlin    |
+| ML Framework       | Scikit-learn      |
+| NLP                | NLTK              |
+| Feature Extraction | TF-IDF            |
+| Backend            | Flask             |
+| Frontend           | HTML, CSS, Jinja2 |
+| Android            | Kotlin, Retrofit  |
+| Database           | PostgreSQL        |
+| Security           | bcrypt, JWT       |
+| Deployment         | Render            |
 
 ---
 
-# Project Structure
+## 📂 Project Structure
 
 ```
 sms_spam_web/
@@ -231,8 +157,119 @@ sms_spam_web/
 
 ---
 
-# Authors
+## 🧪 Sample Test Messages
 
-**Priyanshu Sahoo**
+Use the following sample messages to test the system and verify classification performance.
 
-**Vivek Pralhad Salunkhe**
+---
+
+### 🚨 Spam Test Messages
+
+```text
+Congratulations! You have won a $1000 Walmart gift card. Click here to claim now.
+
+URGENT! Your mobile number has won 50000 cash prize. Call now.
+
+Free entry in a weekly competition to win FA Cup tickets. Text WIN to 87121.
+
+You have been selected for a guaranteed loan approval. Apply now.
+
+Dear user, your account has been suspended. Click this link to verify your details immediately.
+
+Congratulations! You are the lucky winner of our lottery draw. Send your details to claim.
+
+Your email has won 355,000 GBP. Your email was selected by the BMW Promo of the year 2026. Kindly send your name, phone number, age, sex, address, country for claim.
+```
+
+---
+
+### 🟢 Ham (Not Spam) Test Messages
+
+```text
+Hey, are we still meeting for lunch today?
+
+Please send me the notes from yesterday's class.
+
+I will call you when I reach home.
+
+Don't forget to bring the documents tomorrow.
+```
+
+---
+
+### 🎯 Expected Output
+
+| Message Type | Prediction |
+| ------------ | ---------- |
+| Spam Samples | ❌ Spam     |
+| Ham Samples  | ✅ Not Spam |
+
+
+---
+
+## ⚙️ How It Works
+
+```
+1. User types a message in the input box
+2. Message is sent to the Flask backend via POST request
+3. Backend runs NLP preprocessing (lowercase → tokenize → stem → clean)
+4. TF-IDF vectorizer converts cleaned text into numerical features
+5. Trained Naive Bayes model predicts: Spam or Ham
+6. Confidence score is calculated from model probabilities
+7. Result is rendered instantly on the webpage
+```
+
+---
+
+## 👨‍💻 Authors
+
+Developed as a **Final Year BCA Project at KIIT University**, this project represents a complete end-to-end implementation of a real-world problem — combining **Machine Learning, Backend Systems, and Mobile Application Development** to build a scalable SMS spam detection solution.
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="static/images/Member1.png" width="100" height="100" style="border-radius:50%; object-fit:cover;"/><br/><br/>
+      <b>Priyanshu Sahoo</b><br/>
+      <a href="https://in.linkedin.com/in/priyanshusahoo-ps98">
+        <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin&logoColor=white"/>
+      </a>
+    </td>
+    <td align="center">
+      <img src="static/images/Member2.png" width="100" height="100" style="border-radius:50%; object-fit:cover;"/><br/><br/>
+      <b>Vivek Pralhad Salunkhe</b><br/>
+      <a href="https://in.linkedin.com/">
+        <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin&logoColor=white"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 📱 Android Version
+
+> Interested in the **Android version** of this SMS Spam Filter app?
+
+Reach out directly via LinkedIn — happy to share more details!
+
+🔗 **[Connect with Priyanshu Sahoo on LinkedIn](https://in.linkedin.com/in/priyanshusahoo-ps98)**
+
+---
+
+## 📄 License
+
+This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
+
+---
+
+<div align="center">
+
+Made with ❤️ by **Priyanshu Sahoo** & **Vivek Pralhad Salunkhe**
+
+⭐ If you found this project helpful, please consider giving it a star!
+
+</div>
+
+---
+
+<div align="center"> <h1 style=font-weight: bold;>@VPsPs Team</h1> </div>

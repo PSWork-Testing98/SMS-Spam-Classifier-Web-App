@@ -30,7 +30,7 @@
 - [Project Structure](#-project-structure)
 - [Sample Test Messages](#-sample-test-messages)
 - [How It Works](#️-how-it-works)
-- [Authors](#-authors)
+- [Authors](https://github.com/PSWork-Testing98/SMS-Spam-Classifier-Web-App/tree/main?tab=readme-ov-file#%E2%80%8D-authors)
 - [Android Version](#-android-version)
 - [License](#-license)
 

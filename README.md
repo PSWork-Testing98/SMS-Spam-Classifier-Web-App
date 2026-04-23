@@ -237,7 +237,7 @@ Developed as a **Final Year BCA Project at KIIT University**, this project repre
     <td align="center">
       <img src="static/images/Member2.png" width="100" height="100" style="border-radius:50%; object-fit:cover;"/><br/><br/>
       <b>Vivek Pralhad Salunkhe</b><br/>
-      <a href="https://in.linkedin.com/">
+      <a href="https://www.linkedin.com/in/vivek-salunkhe-453808318">
         <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin&logoColor=white"/>
       </a>
     </td>

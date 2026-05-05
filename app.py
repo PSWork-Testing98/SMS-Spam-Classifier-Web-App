@@ -376,10 +376,10 @@ def register():
             if test_conn:
                 test_conn.close()
             flash(
-                "The Render PostgreSQL free trial (30 days) has ended. "
-                "Fixed login credentials are provided, but you may also create "
-                "your own free or paid PostgreSQL instance on Render to continue "
-                "using the project. Thank you!",
+                "This project's PostgreSQL free trial (30 days) has expired and registration has been temporarily disabled. "
+                "Please use the fixed credentials provided below to sign in. "
+                "If you wish to enable registration, you may connect your own PostgreSQL instance on Render "
+                "while setting up your own project. Thank you for your understanding! — Team VPsPs",
                 "error"
             )
             return redirect(url_for("register"))

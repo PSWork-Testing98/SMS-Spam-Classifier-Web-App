@@ -54,10 +54,20 @@ def get_db():
         return None
 #=================================================================================================
 
+#=================================================================================================
+#def get_cursor(conn):
+#    return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 def get_cursor(conn):
+    if conn is None:
+        return None
     return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+#=================================================================================================
+#=================================================================================================
 def init_db():
-    conn   = get_db()
+    conn = get_db()
+    if conn is None:
+        print("[WARN] Database unavailable — skipping init_db(). Fallback credentials will be used.")
+        return
     cursor = get_cursor(conn)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -71,8 +81,28 @@ def init_db():
     conn.commit()
     cursor.close()
     conn.close()
+#def init_db():
+#    conn   = get_db()
+#    cursor = get_cursor(conn)
+#    cursor.execute("""
+#        CREATE TABLE IF NOT EXISTS users (
+#            id            SERIAL       PRIMARY KEY,
+#            username      VARCHAR(50)  NOT NULL UNIQUE,
+#            email         VARCHAR(255) NOT NULL UNIQUE,
+#            password_hash TEXT         NOT NULL,
+#            created_at    TIMESTAMP    NOT NULL DEFAULT NOW()
+#        )
+#    """)
+#    conn.commit()
+#    cursor.close()
+#    conn.close()
+#=================================================================================================
+
+#=================================================================================================
 def get_user_by_email(email: str):
     conn   = get_db()
+    if conn is None:    #ADDED
+        return None    #ADDED
     cursor = get_cursor(conn)
     cursor.execute(
         "SELECT * FROM users WHERE email = %s", (email.lower(),)
@@ -83,6 +113,8 @@ def get_user_by_email(email: str):
     return user
 def get_user_by_username(username: str):
     conn   = get_db()
+    if conn is None:    #ADDED
+        return None    #ADDED
     cursor = get_cursor(conn)
     cursor.execute(
         "SELECT * FROM users WHERE username = %s", (username.lower(),)
@@ -93,6 +125,8 @@ def get_user_by_username(username: str):
     return user
 def get_user_by_id(user_id: int):
     conn   = get_db()
+    if conn is None:    #ADDED
+        return None    #ADDED
     cursor = get_cursor(conn)
     cursor.execute(
         "SELECT * FROM users WHERE id = %s", (user_id,)
@@ -107,6 +141,8 @@ def create_user(username: str, email: str, password: str) -> bool:
     ).decode("utf-8")
     try:
         conn   = get_db()
+        if conn is None:    #ADDED
+            return None    #ADDED
         cursor = get_cursor(conn)
         cursor.execute(
             "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)",
@@ -120,6 +156,8 @@ def create_user(username: str, email: str, password: str) -> bool:
         conn.rollback()
         conn.close()
         return False
+#=================================================================================================
+
 def update_password(user_id: int, new_password: str):
     password_hash = bcrypt.hashpw(
         new_password.encode("utf-8"), bcrypt.gensalt()

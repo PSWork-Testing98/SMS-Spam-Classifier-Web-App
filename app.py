@@ -33,9 +33,27 @@ app.permanent_session_lifetime  = datetime.timedelta(days=30)
 JWT_SECRET  = os.environ.get("JWT_SECRET",    "VPsPs-jwt-secret-CHANGE-IN-PROD")
 API_KEY     = os.environ.get("API_KEY",        "VPsPs-2026-secret")
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://vpsps_db_user:3Yi2xnjynQt5VMbUEseGKvXtSLxMe3VA@dpg-d719ik75gffc73fl6gj0-a/vpsps_db")
+
+#=================================================================================================
+# ── Hardcoded fallback credentials (DB unavailable) ADDED──────────────────────────
+FALLBACK_USERNAME = "vpsps"          # stored lowercase like DB users
+FALLBACK_PASSWORD = "Hello@1234"
+DB_AVAILABLE      = True             # flipped to False if DB is unreachable
+
+#def get_db():
+#    conn = psycopg2.connect(DATABASE_URL)
+#    return conn
 def get_db():
-    conn = psycopg2.connect(DATABASE_URL)
-    return conn
+    global DB_AVAILABLE
+    try:
+        conn = psycopg2.connect(DATABASE_URL, connect_timeout=5)
+        DB_AVAILABLE = True
+        return conn
+    except Exception:
+        DB_AVAILABLE = False
+        return None
+#=================================================================================================
+
 def get_cursor(conn):
     return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 def init_db():
@@ -208,35 +226,79 @@ def index():
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+#=================================================================================================
+#@app.route("/login", methods=["GET", "POST"])
+#def login():
+#    if session.get("logged_in"):
+#        return redirect(url_for("index"))
+#    if request.method == "POST":
+#        identifier = request.form.get("username", "").strip()
+#        password   = request.form.get("password", "").strip()
+#        remember   = request.form.get("remember")
+#        if not identifier or not password:
+#            flash("All fields are required.", "error")
+#            return redirect(url_for("login"))
+#        user = get_user_by_email(identifier) or get_user_by_username(identifier)
+#        if user is None or not verify_password(password, user["password_hash"]):
+#            flash("Invalid credentials. Please try again.", "error")
+#            return redirect(url_for("login"))
+#        session["logged_in"] = True
+#        session["user_id"]   = user["id"]
+#        session["username"]  = user["username"]
+#        if remember:
+#            session.permanent = True
+#        else:
+#            session.permanent = False
+#        return redirect(url_for("index"))
+#    return render_template("login.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if session.get("logged_in"):
         return redirect(url_for("index"))
+
     if request.method == "POST":
         identifier = request.form.get("username", "").strip()
         password   = request.form.get("password", "").strip()
         remember   = request.form.get("remember")
+
         if not identifier or not password:
             flash("All fields are required.", "error")
             return redirect(url_for("login"))
+
+        # ── Try DB login first ────────────────────────────────────────────────
         user = get_user_by_email(identifier) or get_user_by_username(identifier)
-        if user is None or not verify_password(password, user["password_hash"]):
-            flash("Invalid credentials. Please try again.", "error")
-            return redirect(url_for("login"))
-        session["logged_in"] = True
-        session["user_id"]   = user["id"]
-        session["username"]  = user["username"]
-        if remember:
-            session.permanent = True
-        else:
-            session.permanent = False
-        return redirect(url_for("index"))
+
+        if user and verify_password(password, user["password_hash"]):
+            session["logged_in"] = True
+            session["user_id"]   = user["id"]
+            session["username"]  = user["username"]
+            session.permanent    = bool(remember)
+            return redirect(url_for("index"))
+
+        # ── Fallback: hardcoded credentials ───────────────────────────────────
+        if (identifier.lower() == FALLBACK_USERNAME and
+                password == FALLBACK_PASSWORD):
+            session["logged_in"] = True
+            session["user_id"]   = 0
+            session["username"]  = FALLBACK_USERNAME
+            session.permanent    = bool(remember)
+            return redirect(url_for("index"))
+
+        flash("Invalid credentials. Please try again.", "error")
+        return redirect(url_for("login"))
+
     return render_template("login.html")
+#=================================================================================================
+
 @app.route("/logout")
 def logout():
     session.clear()
     flash("You have been signed out.", "success")
     return redirect(url_for("login"))
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if session.get("logged_in"):
@@ -268,6 +330,23 @@ def register():
         if get_user_by_username(username):
             flash("Username is already taken. Please choose another.", "error")
             return redirect(url_for("register"))
+
+#=================================================================================================
+        # ── Check if DB is available before attempting registration ───────────
+        test_conn = get_db()
+        if test_conn is None or not DB_AVAILABLE:
+            if test_conn:
+                test_conn.close()
+            flash(
+                "The Render PostgreSQL free trial (30 days) has ended. "
+                "Fixed login credentials are provided, but you may also create "
+                "your own free or paid PostgreSQL instance on Render to continue "
+                "using the project. Thank you!",
+                "error"
+            )
+            return redirect(url_for("register"))
+        test_conn.close()
+
         success = create_user(username, email, password)
         if success:
             flash("Account created successfully! Please sign in.", "success")
@@ -275,7 +354,17 @@ def register():
         else:
             flash("Registration failed. Please try again.", "error")
             return redirect(url_for("register"))
+            
+        #success = create_user(username, email, password)
+        #if success:
+        #    flash("Account created successfully! Please sign in.", "success")
+        #    return redirect(url_for("login"))
+        #else:
+        #    flash("Registration failed. Please try again.", "error")
+        #    return redirect(url_for("register"))
     return render_template("register.html")
+#=================================================================================================
+
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if session.get("logged_in"):

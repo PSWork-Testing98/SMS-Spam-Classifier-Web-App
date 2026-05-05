@@ -56,11 +56,23 @@ The system is deployed on a cloud platform and provides a **scalable, secure, an
 
 ### 🔑 Login Credentials
 
-- **Username**: `VPsPs`  
+- **Username**: `VPsPs`
 - **Password**: `Hello@1234`
 
----
+> ⚠️ **Note:** The free PostgreSQL database trial (30 days) has expired. Registration is currently disabled. Use the credentials above to sign in. To re-enable registration, connect your own PostgreSQL instance on Render.
 
+---
+## 🔧 Recent Updates
+
+### Database Fallback & Fault Tolerance (2026)
+As the free PostgreSQL trial on Render has expired, the following changes were made to keep the project accessible:
+
+- **Hardcoded fallback credentials** added so users can still sign in without a live database.
+- **Fault-tolerant DB connection** — the app no longer crashes on startup if PostgreSQL is unavailable.
+- **Registration gracefully disabled** with a professional message when the database is unreachable.
+- All database helper functions (`get_user_by_email`, `get_user_by_username`, etc.) now safely handle `None` connections without throwing errors.
+
+---
 ## ✨ Features
 
 ### ⚡ What makes this system powerful?
